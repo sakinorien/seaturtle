@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下一個頁面</title>
+    <style>
+        body {
+            background-color: #000;
+            background-image: url('img/選擇/export202509071355458850.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* 改為 overflow-x: hidden，允許垂直滾動 */
+        }
+        .container {
+            position: relative;
+            text-align: center;
+            width: 100%; /* 改為 100%，適配不同螢幕 */
+            height: 100vh; /* 第一個區塊高度為視窗高度 */
+        }
+        .title-image1, .title-image2 {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            transform: translate(-50%, -50%);
+        }
+        .text1 {
+            position: absolute;
+            top: 50%;
+            left: 40%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 200px;
+            background: url('img/選擇/export202509071357090040.png') no-repeat center;
+            background-size: contain;
+            cursor: pointer;
+        }
+        .text2 {
+            position: absolute;
+            top: 85%;
+            left: 55%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 200px;
+            background: url('img/選擇/export202509071357158680.png') no-repeat center;
+            background-size: contain;
+            cursor: pointer;
+        }
+        section {
+            height: auto; /* 每個區塊高度為視窗高度 */
+            
+            
+             
+        }
+        #section1 {
+            margin-top: auto; /* 確保第一個區塊在 .container 下方 */
+        }
+        
+    </style>
+</head>
+<body>
+    <section id="section1">
+        <div class="container">
+        <img src="img/選擇/export202509071356493040.png" alt="" class="title-image1">
+        <img src="img/選擇/export202509071356577320.png" alt="" class="title-image2">
+        <div class="text1"></div>
+        <div class="text2"></div>
+    </div>
+
+    </section>
+    
+    
+
+    <script>
+        window.onload = function() {
+            const hash = window.location.hash; // 獲取 URL 中的錨點（例如 #section1）
+            if (hash) {
+                const targetElement = document.querySelector(hash);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' }); // 平滑滾動到目標區塊
+                }
+            }
+        };
+    </script>
+</body>
+</html>

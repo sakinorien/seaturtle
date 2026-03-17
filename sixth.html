@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>滿版影片 - 播完跳轉</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #bg-video {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;          /* 關鍵：滿版自動裁切 */
+      z-index: -1;
+    }
+
+    /* 手機直向時強制滿版 */
+    @media (orientation: portrait) {
+      #bg-video {
+        object-fit: cover;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <video id="bg-video" autoplay playsinline>
+    <source src="video/網頁完整影片/Comp 2.mp4" type="video/mp4">
+    您的瀏覽器不支援 video 標籤。
+  </video>
+
+  <script>
+    const video = document.getElementById('bg-video');
+
+    // 嘗試自動播放（有些瀏覽器需要使用者互動）
+    function tryPlay() {
+      video.play().catch(err => {
+        console.log("自動播放被瀏覽器阻擋：", err);
+        // 可在此加提示文字或按鈕讓使用者手動播放
+        video.muted = true;  // 若失敗，先靜音再試
+        video.play();
+      });
+    }
+
+    // 頁面載入後嘗試播放
+    window.addEventListener('load', () => {
+      tryPlay();
+    });
+
+    // 使用者有任何互動後再試開聲（常見解法）
+    document.addEventListener('click', () => {
+      if (video.muted) {
+        video.muted = false;
+        console.log("使用者互動 → 開啟聲音");
+      }
+    }, { once: true });  // 只監聽第一次點擊
+
+    // 播完跳轉
+    video.addEventListener('ended', function() {
+      console.log("影片結束，準備跳轉...");
+      
+      // 加一點延遲，讓結束畫面能看清楚一點
+      setTimeout(() => {
+        window.location.href = 'test5 copy.html';
+      }, 600);  // 600ms ≈ 0.6 秒，可調整
+    });
+
+   
+  </script>
+
+</body>
+</html>
