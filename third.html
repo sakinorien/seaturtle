@@ -11,6 +11,7 @@
             overflow:hidden;
             background:#000;
             position:relative;
+            font-family: system-ui, sans-serif;
         }
 
         /* 影片層 */
@@ -49,21 +50,22 @@
             pointer-events:auto;
         }
 
-        /* === 雙層圓點 === */
+        /* 雙層圓點 - 縮小版 */
         .info-dot {
             position: absolute;
-            width: 45px; height: 45px;
+            width: 28px; 
+            height: 28px;
             cursor: pointer;
-            opacity: 0.6;
+            opacity: 0.7;
             transition: all 0.3s ease;
         }
         .info-dot::before {
             content: '';
             position: absolute;
-            inset: -8px;
+            inset: -6px;
             background: radial-gradient(circle, rgb(255, 255, 255) 50%, transparent 70%);
             border-radius: 50%;
-            animation: glowPulse 1.6s infinite ease-in-out;
+            animation: glowPulse 1.8s infinite ease-in-out;
             pointer-events: none;
             z-index: -1;
         }
@@ -72,18 +74,18 @@
             position: absolute;
             inset: 0;
             background: transparent;
-            border: 4px solid rgba(255,255,255,0.881);
+            border: 3px solid rgba(255, 255, 255, 0.9);
             border-radius: 50%;
-            animation: pulse 1.6s infinite ease-in-out;
+            animation: pulse 1.8s infinite ease-in-out;
             transition: all 0.3s ease;
         }
         @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50%      { transform: scale(1.35); opacity: 0.9; }
+            0%, 100% { transform: scale(1); opacity: 0.65; }
+            50%      { transform: scale(1.4); opacity: 0.95; }
         }
         @keyframes glowPulse {
-            0%, 100% { transform: scale(1); opacity: 0.4; }
-            50%      { transform: scale(1.4); opacity: 0.7; }
+            0%, 100% { transform: scale(1); opacity: 0.45; }
+            50%      { transform: scale(1.45); opacity: 0.75; }
         }
 
         .info-dot.triggered::after {
@@ -92,12 +94,12 @@
             animation: none !important;
             transform: scale(1) !important;
             opacity: 1 !important;
-            box-shadow: 0 0 20px rgba(255,255,255,0.9);
+            box-shadow: 0 0 16px rgba(255,255,255,0.85);
         }
         .info-dot.triggered::before {
             animation: none !important;
-            opacity: 0.8;
-            transform: scale(1.1) !important;
+            opacity: 0.85;
+            transform: scale(1.08) !important;
         }
         .info-dot.triggered {
             pointer-events: none !important;
@@ -106,7 +108,7 @@
         }
 
         .info-dot:hover:not(.triggered) {
-            transform: scale(1.3) !important;
+            transform: scale(1.4) !important;
             opacity: 1;
         }
 
@@ -114,184 +116,198 @@
         .dot-2{top:30%;left:90%;}
         .dot-3{top:80%;left:85%;}
 
-        /* === 資訊卡 === */
-        .info-card {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            width: 2500px;
-            height: 1200px;
-            max-width: 95%;
-            max-height: 90%;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none;
-            z-index: 20;
-        }
+        /* 資訊卡 - 左右並排布局：左圖右文字 + 標題 */
+.info-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.85);
+    width: 90%;
+    max-width: 900px;              /* 稍微加寬一點，讓左右並排更舒適 */
+    max-height: 400px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    z-index: 20;
+    overflow: visible;
+}
 
-        .info-card.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
-            pointer-events: auto;
-        }
+.info-card.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
 
-        .info-card .card-content {
-            position: relative;
-            background: white;
-            padding: 60px;
-            border-radius: 30px;
-            text-align: center;
-            font-family: "Microsoft JhengHei", sans-serif;
-            font-size: 50px;
-            color: #333;
-            line-height: 1.8;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+.info-card .card-content {
+    position: relative;
+    background: rgba(180, 190, 200, 0.85);
+    padding: 30px;
+    border-radius: 24px;
+    display: flex;                 /* 改成 flex 左右並排 */
+    flex-direction: row;
+    gap: 30px;                     /* 圖文間距 */
+    align-items: flex-start;
+    height: auto;
+}
 
-        .card-back-button {
+/* 左側圖片區 */
+.card-image-container {
+    flex: 0 0 45%;                 /* 圖片佔 45% 寬度，可調 40%~50% */
+    max-width: 400px;
+}
+
+.card-image {
+    width: 100%;
+    border-radius: 16px;
+    display: block;
+}
+
+/* 右側文字區 */
+.card-text-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    font-size: 32px;               /* 標題大小 */
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 20px;
+    text-align: center;            /* 或改 left 左對齊 */
+    line-height: 1.3;
+}
+
+.card-text {
+    line-height: 1.7;
+    font-size: 1.05em;
+    color: #333;
+}
+
+.card-text p {
+    margin-bottom: 18px;
+}
+
+.card-back-button {
             position: absolute;
-            top: -20px;
-            left: -400px;
-            width: 200px;
-            height: 200px;
+            top: 0px;
+            left: -60px;
+            width: 60px;
+            height: 60px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 60px;
+            font-size: 32px;
             color: #333;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-            z-index: 10001;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+            transition: all 0.25s ease;
+            z-index: 30;
         }
 
         .card-back-button:hover {
-            background: #e0e0e0;
-            transform: scale(1.15);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            background: rgba(180, 190, 200, 0.85);
+            transform: scale(1.2);
         }
 
-        .card-image {
-            width: 100%;
-            max-width: 1000px;
-            border-radius: 20px;
-            margin: 20px auto 25px auto;
-            display: block;
-        }
 
-        .card-text {
-            line-height: 1.8;
-            margin: 0 30px;
-        }
-        .card-text p {
-            margin-bottom: 25px;
-        }
 
-        #next{
+        /* 下一頁 / 上一頁 */
+        #next, #back {
             position:absolute;
-            top:90%;
-            left:50%;
-            transform:translateX(-50%);
             cursor:pointer;
             z-index:11;
         }
-        #next img{
-            max-height:200px;
-            object-fit:contain;
-        }
-
-        #back{
-            position:absolute;
-            top:5%;
+        #next {
+            bottom: 4%;
             left:50%;
             transform:translateX(-50%);
-            cursor:pointer;
-            z-index:11;
         }
-        #back img{
-            max-height:200px;
-            object-fit:contain;
+        #back {
+            top: 3%;
+            left:50%;
+            transform:translateX(-50%);
+        }
+        #next img, #back img {
+            height: auto;
+            width: auto;
+            max-height: 40px;
+            object-fit: contain;
         }
 
+        /* 右上控制區 - 分開定位 */
         .top-right-controls {
             position: absolute;
-            top: 5%;
-            right: 10%;
-            display: flex;
-            flex-direction: row-reverse;
-            align-items: center;
-            gap: 30px;
+            top: 3%;
+            right: 3%;
             z-index: 13;
         }
 
         #sound-icon {
-            width: 400px;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 64px;
+            height: 64px;
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(20px);
             transition: all .5s ease .5s;
+            cursor: pointer;
         }
+
         #sound-icon.active {
             opacity: 1;
             transform: translateY(0);
         }
+
         #sound-icon:hover {
-            transform: translateY(0) scale(1.25);
-        }
-        #sound-icon img {
-            width: 55%;
-            filter: brightness(1) drop-shadow(0 0 8px rgba(255,255,255,.5));
-            transition: all .3s ease;
-        }
-        #sound-icon:hover img {
-            filter: brightness(1.3) drop-shadow(0 0 20px rgba(255,255,255,.9));
+            transform: translateY(0) scale(1.18);
         }
 
-        #menu-icon{
-            width: 400px;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+        #menu-icon {
+            position: absolute;
+            top: 7px;                 /* 往下移距離，可自行調整 60~100px */
+            right: 80px;
+            width: 64px;
+            height: 64px;
             opacity: 0;
-            transform: translateY(30px);
-            transition: all .5s ease .5s;
+            transform: translateY(20px);
+            transition: all .5s ease .6s;
+            cursor: pointer;
         }
-        #menu-icon.active{
+
+        #menu-icon.active {
             opacity: 1;
             transform: translateY(0);
         }
-        #menu-icon:hover{
-            transform: translateY(0) scale(1.25);
-        }
-        #menu-icon img{
-            width: 55%;
-            filter: brightness(1) drop-shadow(0 0 8px rgba(255,255,255,.5));
-            transition: all .3s ease;
-        }
-        #menu-icon:hover img{
-            filter: brightness(1.3) drop-shadow(0 0 20px rgba(255,255,255,.9));
+
+        #menu-icon:hover {
+            transform: translateY(0) scale(1.18);
         }
 
+        #sound-icon img, #menu-icon img {
+            width: 80%;
+            filter: brightness(1) drop-shadow(0 0 6px rgba(255,255,255,.6));
+            transition: all .25s ease;
+        }
+
+        #sound-icon:hover img, #menu-icon:hover img {
+            filter: brightness(1.4) drop-shadow(0 0 14px rgba(255,255,255,.9));
+        }
+
+        /* 音量拉桿 */
         #volume-control {
             position: absolute;
-            top: 480px;
-            right: 10%;
-            width: 400px;
-            height: 600px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 30px;
+            top: 18%;
+            right: 4%;
+            width: 80px;
+            height: 320px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 24px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -307,21 +323,20 @@
         #volume-control input[type="range"] {
             writing-mode: bt-lr;
             -webkit-appearance: slider-vertical;
-            width: 500px;
-            height: 80%;
+            width: 16px;
+            height: 85%;
             background: transparent;
             cursor: pointer;
         }
         #volume-control input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             background: white;
             border-radius: 50%;
-            box-shadow: 0 0 15px rgba(255,255,255,0.8);
+            box-shadow: 0 0 12px rgba(255,255,255,0.7);
         }
 
-        /* 滾輪選單 */
+        /* 滾輪選單 - 等比例縮小 */
         #wheel-modal{
             position:fixed;
             inset:0;
@@ -342,23 +357,23 @@
             pointer-events:auto;
         }
         #wheel-modal .wheel-container{
-            width:90%;
-            max-width:1200px;
-            height:80vh;
-            max-height:900px;
+            width: 88%;
+            max-width: 820px;
+            height: 72vh;
+            max-height: 620px;
             background:rgba(255,255,255,.08);
-            border-radius:28px;
+            border-radius:20px;
             overflow:hidden;
-            box-shadow:0 20px 80px rgba(0,0,0,.8);
+            box-shadow:0 16px 60px rgba(0,0,0,.75);
             position:relative;
         }
         .wheel-container::before{
-            content:'';position:absolute;top:0;left:0;right:0;height:280px;
+            content:'';position:absolute;top:0;left:0;right:0;height:180px;
             background:linear-gradient(to bottom, rgba(0,0,0,.9), transparent);
             pointer-events:none;z-index:10;
         }
         .wheel-container::after{
-            content:'';position:absolute;bottom:0;left:0;right:0;height:280px;
+            content:'';position:absolute;bottom:0;left:0;right:0;height:180px;
             background:linear-gradient(to top, rgba(0,0,0,.9), transparent);
             pointer-events:none;z-index:10;
         }
@@ -368,43 +383,43 @@
             transition:transform .45s cubic-bezier(0.23,1,0.32,1);
         }
         #wheel-modal .wheel-item{
-            height:200px;
+            height:130px;
             display:flex;
             justify-content:center;
             align-items:center;
-            font-size:72px;
+            font-size:48px;
             color:white;
             font-weight:800;
-            letter-spacing:4px;
-            text-shadow:0 4px 20px rgba(0,0,0,.8);
+            letter-spacing:3px;
+            text-shadow:0 3px 16px rgba(0,0,0,.8);
             cursor:pointer;
             position:relative;
             z-index:1;
-            filter:blur(2.5px);
-            opacity:0.55;
-            transform:scale(0.86);
+            filter:blur(2px);
+            opacity:0.6;
+            transform:scale(0.88);
             transition:all .45s cubic-bezier(0.23,1,0.32,1);
         }
         .wheel-item.near{
             filter:blur(0.8px);
             opacity:0.88;
-            transform:scale(0.95);
+            transform:scale(0.96);
         }
         .wheel-item.active{
             filter:blur(0)!important;
             opacity:1!important;
-            transform:scale(1.12)!important;
+            transform:scale(1.09)!important;
             background:linear-gradient(135deg, rgba(255,255,255,.38), rgba(255,255,255,.18));
-            text-shadow:0 0 35px rgba(255,255,255,.95);
-            box-shadow:0 0 70px rgba(255,255,255,.6);
+            text-shadow:0 0 30px rgba(255,255,255,.9);
+            box-shadow:0 0 60px rgba(255,255,255,.55);
             z-index:20;
         }
 
         #wheel-modal .highlight{
             position:absolute;
-            top:calc(50% - 90px);
+            top:calc(50% - 65px);
             width:100%;
-            height:180px;
+            height:130px;
             background:linear-gradient(180deg, transparent 0%, rgba(255,255,255,.25) 50%, transparent 100%);
             border-top:2px solid rgba(255,255,255,.5);
             border-bottom:2px solid rgba(255,255,255,.5);
@@ -412,46 +427,67 @@
             z-index:5;
         }
 
-        /* 布幕相關 */
-        .pole {
-            position: fixed;
-            top: -15%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4000px;
-            height: 1000px;
-            background: url('img/布幕-棍.png') center center / contain no-repeat;
-            pointer-events: none;
-            z-index: 18;
+        #close-wheel{
+            position:absolute;
+            top:16px;
+            right:16px;
+            width:52px;height:52px;
+            background:rgba(255,255,255,.2);
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:32px;
+            color:white;
+            backdrop-filter:blur(10px);
+            cursor:pointer;
+            z-index:30;
+            transition:all .3s;
+        }
+        #close-wheel:hover{
+            background:rgba(255,0,0,.6);
+            transform:rotate(90deg);
         }
 
-        .curtain {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100%);
-            width: 3500px;
-            height: 1500px;
-            background: url('img/布幕.png') center/cover no-repeat;
-            transition: transform 0.55s cubic-bezier(0.23,1,0.32,1);
-            z-index: 16;
-        }
-        .curtain.active {
-            transform: translateX(-50%) translateY(0);
-        }
+        /* 布幕相關 - 以棍子寬 1536px 為基準，等比例縮小 ≈38.4% */
+.pole {
+    position: fixed;
+    top: -20%;                     /* 原 -15% → 縮小後大幅調高，避免頂部過空 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1000px;                /* 1920 × 0.8 = 1536px */
+    height: 300px;                /* 原 1000px × 0.384 */
+    background: url('img/布幕-棍.png') center center / contain no-repeat;
+    pointer-events: none;
+    z-index: 18;
+}
 
-        .pull-rope {
-            position: absolute;
-            bottom: -500px;
-            left: 10%;
-            transform: translateX(-50%);
-            width: 500px;
-            height: 500px;
-            background: url('img/拉繩.png') center top / contain no-repeat;
-            cursor: pointer;
-            z-index: 17;
-        }
+.curtain {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    width: 900px;                /* 原 3500px × 0.384 */
+    height: 400px;                /* 原 1500px × 0.384 */
+    background: url('img/布幕.png') center/cover no-repeat;
+    transition: transform 0.55s cubic-bezier(0.23,1,0.32,1);
+    z-index: 16;
+}
+.curtain.active {
+    transform: translateX(-50%) translateY(0);
+}
 
+.pull-rope {
+    position: absolute;
+    bottom: -192px;               /* 原 -500px × 0.384 ≈ -192px，微調避免太低 */
+    left: 10%;
+    transform: translateX(-50%);
+    width: 192px;                 /* 原 500px × 0.384 */
+    height: 192px;                /* 原 500px × 0.384 */
+    background: url('img/拉繩.png') center top / contain no-repeat;
+    cursor: pointer;
+    z-index: 17;
+}
         /* 前景影片 */
         #foreground-video-wrapper {
             position: absolute;
@@ -476,7 +512,7 @@
 </head>
 <body>
 
-    <!-- 背景影片（加 loop，一直循環播放） -->
+    <!-- 背景影片 -->
     <div id="video-wrapper">
         <video id="bg-video" class="video active" autoplay muted loop preload="auto">
             <source src="video/網頁完整影片/夜晚沙灘.mp4" type="video/mp4">
@@ -506,38 +542,54 @@
         <div class="info-dot dot-2" id="dot2"></div>
         <div class="info-dot dot-3" id="dot3"></div>
 
-        <!-- 資訊框1~3 -->
-        <div id="info1" class="info-card">
-            <div class="card-back-button">←</div>
-            <div class="card-content">
-                <img src="img/挖出前一窩.jpg" alt="" class="card-image">
-                <div class="card-text">
-                    <p>岸上燈光嚴重影響綠蠵龜，母龜因懼怕燈光而不願上岸產卵，將導致產卵次數減少，甚至可能因燈光干擾而放棄產卵。或迫集中在燈光較少的沙灘產卵，過度擁擠可能導致前一窩的卵被挖出死亡。</p>
-                </div>
+        <!-- 資訊框1 -->
+<div id="info1" class="info-card">
+    <div class="card-back-button">←</div>
+    <div class="card-content">
+        <div class="card-image-container">
+            <img src="img/挖出前一窩.jpg" alt="" class="card-image">
+        </div>
+        <div class="card-text-container">
+            <h2 class="card-title">光害導致重複產卵</h2>
+            <div class="card-text">
+                <p>岸上燈光嚴重影響綠蠵龜，母龜因懼怕燈光而不願上岸產卵，將導致產卵次數減少，甚至可能因燈光干擾而放棄產卵。或迫集中在燈光較少的沙灘產卵，過度擁擠可能導致前一窩的卵被挖出死亡。</p>
             </div>
         </div>
+    </div>
+</div>
 
-        <div id="info2" class="info-card">
-            <div class="card-back-button">←</div>
-            <div class="card-content">
-                <img src="img/受燈光影響迷失.jpg" alt="" class="card-image">
-                <div class="card-text">
-                    <p>幼龜會被明亮的燈光誤導，無法辨識海的方向而迷失在陸地上，最終因脫水死亡，無法成功回到大海。因此，減少或改變沿岸燈光的種類與方向，能有效降低光害對綠蠵龜繁殖的危害。</p>
-                </div>
+<!-- 資訊框2 -->
+<div id="info2" class="info-card">
+    <div class="card-back-button">←</div>
+    <div class="card-content">
+        <div class="card-image-container">
+            <img src="img/受燈光影響迷失.jpg" alt="" class="card-image">
+        </div>
+        <div class="card-text-container">
+            <h2 class="card-title">幼龜迷航與脫水死亡</h2>
+            <div class="card-text">
+                <p>幼龜會被明亮的燈光誤導，無法辨識海的方向而迷失在陸地上，最終因脫水死亡，無法成功回到大海。因此，減少或改變沿岸燈光的種類與方向，能有效降低光害對綠蠵龜繁殖的危害。</p>
             </div>
         </div>
+    </div>
+</div>
 
-        <div id="info3" class="info-card">
-            <div class="card-back-button">←</div>
-            <div class="card-content">
-                <img src="img/垃圾污染產卵地.jpg" alt="" class="card-image">
-                <div class="card-text">
-                    <p>受感染壞死的綠蠵龜卵：</p>
-                    <p>卵殼表面有明顯的紫黑斑點，造成原因通常是沙灘垃圾太多，合適產卵的地方所剩無幾，母綠蠵龜只能在重複地方產卵。長期下來，細菌或真菌等病原體可能在沙中累積，特別是在潮濕、通風不良的地點，影響蛋的孵化或幼龜健康。</p>
-                </div>
+<!-- 資訊框3 -->
+<div id="info3" class="info-card">
+    <div class="card-back-button">←</div>
+    <div class="card-content">
+        <div class="card-image-container">
+            <img src="img/垃圾污染產卵地.jpg" alt="" class="card-image">
+        </div>
+        <div class="card-text-container">
+            <h2 class="card-title">垃圾累積導致卵壞死</h2>
+            <div class="card-text">
+                <p>受感染壞死的綠蠵龜卵：</p>
+                <p>卵殼表面有明顯的紫黑斑點，造成原因通常是沙灘垃圾太多，合適產卵的地方所剩無幾，母綠蠵龜只能在重複地方產卵。長期下來，細菌或真菌等病原體可能在沙中累積，特別是在潮濕、通風不良的地點，影響蛋的孵化或幼龜健康。</p>
             </div>
         </div>
-
+    </div>
+</div>
         <div id="next">
             <img src="img/Icon-下一頁.png" alt="下一頁">
         </div>
@@ -572,7 +624,7 @@
     </div>
 
     <script>
-        // === 背景音樂自動播放（跟起源頁一樣）===
+        // 背景音樂
         const bgm = document.getElementById('bgm');
         const soundIcon = document.getElementById('sound-icon');
         const soundImg = document.getElementById('sound-img');
@@ -580,19 +632,15 @@
         const volumeSlider = document.getElementById('volume-slider');
         let isPlaying = true;
 
-        // 頁面載入後直接嘗試自動播放
         bgm.volume = 0.6;
         bgm.play().catch(() => {
-            // 如果被阻擋，等待使用者互動再播放
             isPlaying = false;
         });
 
-        // 初始圖示為「有聲」
         window.addEventListener('load', () => {
             soundImg.src = 'img/聲音.png';
         });
 
-        // 聲音按鈕切換
         soundIcon.addEventListener('click', () => {
             if (isPlaying) {
                 bgm.pause();
@@ -611,7 +659,6 @@
             bgm.volume = e.target.value / 100;
         });
 
-        // 備用解鎖（如果自動播放失敗，點畫面任意處可解鎖）
         document.body.addEventListener('click', () => {
             if (!isPlaying) {
                 bgm.play().catch(() => {});
@@ -620,18 +667,17 @@
             }
         }, { once: true });
 
-        // === 互動層顯示（開場幾秒後自動出現）===
+        // 互動層延遲出現
         const overlay = document.getElementById('overlay');
-
         setTimeout(() => {
             overlay.classList.add('active');
             document.getElementById('next').classList.add('active');
             document.getElementById('back').classList.add('active');
             document.getElementById('sound-icon').classList.add('active');
             document.getElementById('menu-icon').classList.add('active');
-        }, 8000);  // 改成你的開場秒數 × 1000
+        }, 8000);
 
-        // === 白點與資訊框 ===
+        // 圓點與資訊框
         document.getElementById('dot1').addEventListener('click', () => {
             const card = document.getElementById('info1');
             if (!card.classList.contains('show')) {
@@ -674,7 +720,7 @@
             });
         });
 
-        // === 下一頁 / 上一頁 ===
+        // 下一頁 / 上一頁
         document.getElementById('next').addEventListener('click', () => {
             window.location.href = 'third 1.html';
         });
@@ -683,7 +729,7 @@
             window.location.href = 'second copy.html'; 
         });
 
-        // === 布幕拉繩切換前景影片 ===
+        // 布幕拉繩
         const curtain = document.getElementById('curtain');
         const rope = document.getElementById('rope');
         const fgVideo1 = document.getElementById('fg-video1');
@@ -703,22 +749,22 @@
             }
         };
 
-        // === 滾輪選單 ===
+        // 滾輪選單
         const menuIcon = document.getElementById('menu-icon');
         const wheelModal = document.getElementById('wheel-modal');
         const wheel = document.getElementById('wheel');
 
-        const itemHeight = 200;
+        const itemHeight = 130;
         let containerHeight = 0;
         let highlightOffset = 0;
         let currentIndex = 1;
 
         const chapters = [
-            { text: '龜途', page: 'test5 copy.html' },
+            { text: '龜途', page: 'index.html' },
             { text: '起源', page: 'second copy.html' },
             { text: '破殼', page: 'third 1.html' },
             { text: '天擇', page: 'forth copy.html' },
-             { text: '悲鳴', page: 'fifth.html' }
+            { text: '悲鳴', page: 'fifth.html' }
         ];
 
         function calculateHighlight() {
