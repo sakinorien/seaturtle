@@ -2,542 +2,246 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>特徵</title>
+<title>特徵 - 綠蠵龜 (300px 範圍縮小版)</title>
 <style>
-  body, html {
-    margin: 0;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    position: relative; /* 讓 video 可以絕對定位在底下 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* 全螢幕影片背景 */
-  #bgVideo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1;
-    transform: translate(-50%, -50%);
-    object-fit: cover; /* 確保影片填滿畫面 */
-  }
-
-  .turtle {
-    position: relative;
-    width: 1200px;
-    height: 600px;
-    animation: calmSwim 40s linear infinite;
-    cursor: pointer;
-    z-index: 2; /* 確保海龜在影片之上 */
-  }
-
-  @keyframes calmSwim {
-    0%   { transform: translateX(-1100px) translateY(160px) rotate(2deg)   scaleX(1); }
-    25%  { transform: translateX( -400px) translateY(60px)  rotate(0deg)   scaleX(1); }
-    48%  { transform: translateX( 1050px) translateY(-20px) rotate(-1deg)  scaleX(1); }
-    50%  { transform: translateX(1100px) translateY(20px) rotate(-1deg)  scaleX(1); }
-    52%  { transform: translateX(1100px) translateY(20px) rotate(-8deg)  scaleX(-1); }
-    75%  { transform: translateX(-400px) translateY(80px)  rotate(1deg)   scaleX(-1); }
-    98%  { transform: translateX(-1100px) translateY(140px) rotate(2deg)   scaleX(-1); }
-    99%  { transform: translateX(-1100px) translateY(140px) rotate(-6deg)  scaleX(-1); }
-    100% { transform: translateX(-1100px) translateY(160px) rotate(2deg)   scaleX(1); }
-  }
-
-  .body {width:580px;height:440px;position:absolute;left:310px;top:100px;z-index:3;}
-  .front-leg,.back-leg {position:absolute;transform-origin:center 3%;}
-  .front-leg {animation: front 2.6s linear infinite;}
-  .back-leg {animation: back 2.6s linear 0.4s infinite;}
-  .right-front {width:160px;height:250px;left:540px;top:330px;z-index:5;}
-  .right-back  {width:165px;height:260px;left:340px;top:380px;z-index:2;}
-  .left-back   {width:165px;height:260px;left:410px;top:300px;z-index:1;}
-  .left-front  {width:150px;height:240px;left:570px;top:270px;z-index:1;}
-
-  @keyframes front {
-    0%   {transform:rotate(-15deg);}
-    40%  {transform:rotate(80deg);}
-    62%  {transform:rotate(-82deg);}
-    100% {transform:rotate(-15deg);}
-  }
-
-  @keyframes back {
-    0%   {transform:rotate(-8deg);}
-    40%  {transform:rotate(26deg);}
-    62%  {transform:rotate(-34deg);}
-    100% {transform:rotate(-8deg);}
-  }
-
-  .speech-bubble {
-    position: absolute;
-    left: -300px;
-    top: -200px;
-    width: 1000px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 25px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    font-family: "Microsoft JhengHei", sans-serif;
-    font-size: 50px;
-    line-height: 1.6;
-    text-align: center;
-    color: #333;
-    z-index: 10;
-    cursor: url('img/放大鏡.png'), zoom-in;
-    transform: scaleX(var(--flip-correction, 1));
-    transition: opacity 0.6s ease;
-    opacity: 0;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .speech-bubble.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .speech-bubble.no-zoom {
-    cursor: default;
-  }
-
-  .speech-bubble::before {
-    content: '';
-    position: absolute;
-    bottom: -35px;
-    right: var(--arrow-right, 40px);
-    left: var(--arrow-left, auto);
-    border: 20px solid transparent;
-    border-top-color: rgba(255, 255, 255, 0.95);
-    transform: scaleX(var(--flip-correction, 1));
-  }
-
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-
-  .modal-content {
-    position: relative;
-    background: white;
-    padding: 40px;
-    border-radius: 25px;
-    width: 2500px;
-    height: 1200px;
-    max-width: 95%;
-    max-height: 90%;
-    overflow-y: auto;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.5);
-    font-family: "Microsoft JhengHei", sans-serif;
-    font-size: 50px;
-    color: #333;
-    text-align: center;
-  }
-
-  .modal-content img {
-    width: 100%;
-    max-width: 1000px;
-    border-radius: 20px;
-    margin: 20px auto 25px auto;
-    display: block;
-  }
-
-  .modal-content p {
-    text-align: center;
-    margin: 0 30px 25px 30px;
-    line-height: 1.8;
-  }
-
-  #modalText {
-    margin-top: 100px;
-  }
-
-  .back-button {
-    position: absolute;
-    left: 1000px;
-    top: 550px;
-    width: 200px;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 72px;
-    color: #333;
-    cursor: pointer;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    transition: all 0.3s ease;
-    z-index: 10001;
-  }
-
-  .back-button:hover {
-    background: #e0e0e0;
-    transform: scale(1.15);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  }
-
-  .bubble-button {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: rgba(200, 235, 255, 0.4);
-    backdrop-filter: blur(10px);
-    border: 3px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 
-      0 8px 20px rgba(0, 0, 0, 0.15),
-      inset 0 4px 10px rgba(255, 255, 255, 0.4),
-      0 0 20px rgba(150, 220, 255, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 100px;
-    color: #2c7fb8;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    user-select: none;
-  }
-
-  .bubble-button:hover {
-    transform: scale(1.15) translateY(-5px);
-    background: rgba(200, 245, 255, 0.6);
-    box-shadow: 
-      0 12px 30px rgba(0, 0, 0, 0.2),
-      inset 0 6px 15px rgba(255, 255, 255, 0.6),
-      0 0 30px rgba(150, 220, 255, 0.6);
-  }
-
-  .home-button {
-    position: fixed;
-    left: 100px;
-    top: 100px;
-    z-index: 10000;
-  }
-
-  @media (max-width: 900px) {
-    .back-button {
-      left: 10px;
-      top: 10px;
-      width: 60px;
-      height: 60px;
-      font-size: 40px;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        height: 100vh;
+        overflow: hidden;
+        background: #000;
+        position: relative;
+        font-family: system-ui, -apple-system, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
-    .home-button {
-      left: 15px;
-      top: 15px;
-      width: 60px;
-      height: 60px;
-      font-size: 32px;
+
+    /* 影片層 */
+    #video-wrapper {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 1;
     }
+    .video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 1; /* 直接設為 1 確保顯示 */
+    }
+
+    /* 海龜與動畫 (300px，速度 60s) */
+    .turtle {
+        position: relative;
+        width: 300px;
+        height: 150px;
+        animation: calmSwim 60s linear infinite;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    /* 調整後的高度：將 translateY 數值減小，海龜就會往上升 */
+@keyframes calmSwim {
+    0%   { transform: translateX(-600px) translateY(110px) rotate(2deg) scaleX(1); } /* 460 -> 310 */
+    25%  { transform: translateX( 0px)    translateY(10px) rotate(0deg) scaleX(1); } /* 360 -> 210 */
+    48%  { transform: translateX( 600px)  translateY(0px) rotate(-1deg) scaleX(1); } /* 300 -> 150 */
+    50%  { transform: translateX( 620px)  translateY(0px) rotate(-1deg) scaleX(1); } /* 320 -> 170 */
+    52%  { transform: translateX( 620px)  translateY(0px) rotate(-8deg) scaleX(-1); }
+    75%  { transform: translateX( 0px)    translateY(30px) rotate(1deg) scaleX(-1); } /* 380 -> 230 */
+    98%  { transform: translateX(-600px) translateY(90px) rotate(2deg) scaleX(-1); } /* 440 -> 290 */
+    99%  { transform: translateX(-620px) translateY(90px) rotate(-6deg) scaleX(-1); }
+    100% { transform: translateX(-600px) translateY(110px) rotate(2deg) scaleX(1); }
+}
+
+    /* 肢體動畫 */
+    .body { width: 145px; height: 110px; position: absolute; left: 77px; top: 25px; z-index: 3; }
+    .front-leg, .back-leg { position: absolute; transform-origin: center 3%; animation-duration: 2.6s; animation-iteration-count: infinite; }
+    .right-front { width: 40px; height: 63px; left: 135px; top: 82px; z-index: 5; animation-name: front; }
+    .right-back  { width: 41px; height: 65px; left: 85px; top: 95px; z-index: 2; animation-name: back; animation-delay: 0.4s; }
+    .left-back   { width: 41px; height: 65px; left: 102px; top: 75px; z-index: 1; animation-name: back; animation-delay: 0.4s; }
+    .left-front  { width: 38px; height: 60px; left: 142px; top: 68px; z-index: 1; animation-name: front; }
+
+    @keyframes front { 0%, 100% { transform: rotate(-15deg); } 40% { transform: rotate(80deg); } 62% { transform: rotate(-82deg); } }
+    @keyframes back { 0%, 100% { transform: rotate(-8deg); } 40% { transform: rotate(26deg); } 62% { transform: rotate(-34deg); } }
+
+    /* 對話框樣式 */
     .speech-bubble {
-      width: 80%;
-      left: 10%;
-      font-size: 28px;
+        position: absolute; left: -120px; top: -80px;
+        width: 320px; padding: 15px;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 18px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        font-size: 18px; font-weight: bold; text-align: center; color: #333;
+        opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+        transform: scaleX(var(--flip-correction, 1));
     }
-  }
+    .speech-bubble.show { opacity: 1; pointer-events: auto; }
+    .speech-bubble::before {
+        content: ''; position: absolute; bottom: -20px;
+        right: var(--arrow-right, 30px); left: var(--arrow-left, auto);
+        border: 10px solid transparent; border-top-color: white;
+    }
 
-  /* 聲音控制區域 */
-        .sound-control {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
+    /* 資訊卡樣式 */
+    .modal-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        justify-content: center; align-items: center;
+        z-index: 9999; backdrop-filter: blur(5px);
+    }
+    .info-card {
+        position: relative; width: 85%; max-width: 650px;
+        background: rgba(180, 190, 200, 0.85); border-radius: 20px;
+        padding: 25px; display: flex; gap: 25px;
+        transform: scale(0.85); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-overlay.show .info-card { transform: scale(1); }
 
-        /* 聲音開關按鈕（保持你設的 200px） */
-        .sound-toggle {
-            width: 200px;
-            height: 200px;
-            background-color: rgba(0, 0, 0, 0.4);
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s;
-        }
-        .sound-toggle:hover {
-            background-color: rgba(0, 0, 0, 0.7);
-            transform: scale(1.1);
-        }
-        .sound-toggle img {
-            width: 200px;
-            height: 200px;
-        }
+    .card-image-container { flex: 0 0 45%; max-width: 280px; }
+    .card-image { width: 100%; border-radius: 12px; display: block; object-fit: cover; }
+    .card-text-container { flex: 1; display: flex; flex-direction: column; color: #222; }
+    .card-title { font-size: 24px; font-weight: bold; margin-bottom: 12px; }
+    .card-text { font-size: 1.05em; line-height: 1.6; color: #333; }
 
-        /* 音量滑桿 - 預設隱藏，點按鈕後出現 */
-        .volume-slider {
-            width: 200px;
-            height: 320px;
-            background-color: rgba(0, 0, 0, 0.4);
-            border-radius: 20px;
-            padding: 10px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-        .volume-slider.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        .volume-slider input[type="range"] {
-            writing-mode: bt-lr;
-            -webkit-appearance: slider-vertical;
-            width: 100px;
-            height: 100%;
-            background: transparent;
-            cursor: pointer;
-        }
-        .volume-slider input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 30px;
-            height: 30px;
-            background: #fff;
-            border-radius: 50%;
-            box-shadow: 0 0 8px rgba(0,0,0,0.6);
-        }
+    /* 按鈕與控制 */
+    .card-back-button { position: absolute; top: -12px; left: -12px; width: 50px; height: 50px; background: rgba(180, 190, 200, 0.95); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; color: #333; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 30; transition: transform 0.2s; }
+    .card-back-button:hover { transform: scale(1.15); }
+    .bubble-button { width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; font-size: 30px; color: white; cursor: pointer; z-index: 100; }
+    .home-button { position: fixed; left: 25px; top: 25px; }
+
+    .sound-control { position: fixed; bottom: 25px; right: 25px; z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .sound-toggle { width: 56px; height: 56px; background: rgba(0,0,0,0.4); border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+    .sound-toggle img { width: 35px; height: 35px; }
+    .volume-slider { width: 45px; height: 130px; background: rgba(0,0,0,0.4); border-radius: 12px; display: none; justify-content: center; padding: 8px 0; }
+    .volume-slider.visible { display: flex; }
+    .volume-slider input { -webkit-appearance: slider-vertical; width: 8px; }
 </style>
 </head>
 <body>
 
-<!-- 全螢幕背景影片 -->
-<video id="bgVideo" autoplay muted loop playsinline>
-  <source src="video/船-動態.mp4" type="video/mp4">  <!-- 請改成你的影片路徑 -->
-  Your browser does not support the video tag.
-</video>
-
-<div class="bubble-button home-button" onclick="window.history.back()" title="返回上一頁">
-  ←
+<div id="video-wrapper">
+    <video id="video" class="video" autoplay muted loop playsinline preload="auto">
+        <source src="video/船-動態.mp4" type="video/mp4">
+    </video>
 </div>
 
-<div class="turtle" id="myTurtle">
-  <img src="body.png"        class="body">
-  <img src="left_front.png"  class="front-leg left-front">
-  <img src="left_back.png"   class="back-leg  left-back">
-  <img src="right_back.png"  class="back-leg  right-back">
-  <img src="right_front.png" class="front-leg right-front">
+<div class="bubble-button home-button" onclick="window.history.back()">←</div>
 
-  <div class="speech-bubble" id="bubble">
-    <p id="bubbleText"></p>
-  </div>
+<div class="turtle" id="myTurtle">
+    <img src="body.png" class="body">
+    <img src="left_front.png" class="front-leg left-front">
+    <img src="left_back.png" class="back-leg left-back">
+    <img src="right_back.png" class="back-leg right-back">
+    <img src="right_front.png" class="front-leg right-front">
+    <div class="speech-bubble" id="bubble"><p id="bubbleText"></p></div>
 </div>
 
 <div class="modal-overlay" id="detailModal">
-  <div class="back-button" id="backButton">←</div>
-  
-  <div class="modal-content" id="modalContent">
-    <h2 id="modalTitle"></h2>
-    <img id="modalImage" src="" alt="">
-    <div id="modalText"></div>
-  </div>
-</div>
-
- <!-- 背景音樂 -->
-    <audio id="bgm" loop preload="auto">
-        <source src="video/開心音樂-happy-music.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- 聲音控制區域 -->
-    <div class="sound-control">
-        <!-- 音量拉桿（預設隱藏） -->
-        <div class="volume-slider" id="volumeSlider">
-            <input type="range" id="volumeControl" min="0" max="100" value="70" step="1">
-        </div>
-
-        <!-- 開/關按鈕 -->
-        <div class="sound-toggle" onclick="toggleSound()">
-            <img src="img/靜音.png" alt="聲音開關" id="sound-icon">
+    <div class="info-card">
+        <div class="card-back-button" id="closeCard">←</div>
+        <div class="card-image-container"><img id="modalImage" src="" class="card-image"></div>
+        <div class="card-text-container">
+            <h2 class="card-title" id="modalTitle"></h2>
+            <div class="card-text" id="modalText"></div>
         </div>
     </div>
+</div>
+
+<audio id="bgm" loop><source src="video/開心音樂-happy-music.mp3" type="audio/mpeg"></audio>
+
+<div class="sound-control">
+    <div class="volume-slider" id="volumeSliderContainer"><input type="range" id="volumeControl" min="0" max="100" value="70"></div>
+    <div class="sound-toggle" onclick="toggleSound()"><img src="img/靜音.png" id="sound-icon"></div>
+</div>
 
 <script>
-
-  const bgm = document.getElementById('bgm');
-        const soundIcon = document.getElementById('sound-icon');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const volumeControl = document.getElementById('volumeControl');
-        let isPlaying = false;
-
-        // 初始音量 70%
-        bgm.volume = 0.7;
-
-        // 點擊按鈕：切換播放/暫停，並顯示/隱藏拉桿
-        function toggleSound() {
-            if (isPlaying) {
-                // 關閉音樂
-                bgm.pause();
-                soundIcon.src = 'img/靜音.png';
-                volumeSlider.classList.remove('visible');
-                isPlaying = false;
-            } else {
-                // 開啟音樂
-                bgm.play();
-                soundIcon.src = 'img/聲音.png';
-                volumeSlider.classList.add('visible'); // 出現拉桿
-                isPlaying = true;
-            }
-        }
-
-        // 即時調整音量
-        volumeControl.addEventListener('input', function() {
-            bgm.volume = this.value / 100;
-        });
-
-        // 頁面載入完成
-        window.onload = function() {
-            soundIcon.src = 'img/靜音.png';
-            volumeSlider.classList.remove('visible'); // 確保初始隱藏
-        };
-// 第一階段：前五個需要解說的特徵
 const initialFeatures = [
-  {
-    bubble: "我的背甲花紋像煙火一樣繽紛燦爛！",
-    image: "img/花紋.png",
-    alt: "年輕海龜背甲的輻射狀花紋，像煙火般燦爛",
-    text: `<p>年輕的海龜背甲上常見美麗的輻射狀紋路，從中央向外發散，像煙火綻放一樣繽紛燦爛。</p><p>隨著海龜長大，背甲會逐漸變得較為斑駁、呈迷彩狀，輻射狀花紋大多會變得不明顯，這是正常的生長現象。</p>`,
-    hasDetail: true
-  },
-  {
-    bubble: "我的背甲是水滴形狀喔。",
-    image: "img/水滴.png",
-    alt: "綠蠵龜背甲水滴形狀",
-    text: `<p>大多數綠蠵龜的背甲形狀呈水滴狀或橢圓狀。</p><p>背甲直線長度約為90-130公分。</p>`,
-    hasDetail: true
-  },
-  {
-    bubble: "我喜歡吃藻類，因為常常吸收葉綠素，全身看起來綠綠的，所以人們也稱我為綠蠵龜喔。",
-    image: "img/葉綠素.png",
-    alt: "綠色脂肪與藻類",
-    text: `<p>龜甲與身體間的脂肪呈現綠色,這也是牠們被稱為綠蠵龜的主要原因,可能與牠們大量取食藻類有關。又因綠蠵龜長年在淺海區覓食,背甲經常附著大量藻類,整片綠油油的,當牠們浮出海面呼吸而被漁民見到後,便稱牠為綠龜。</p>`,
-    hasDetail: true
-  },
-  {
-    bubble: "我的兩眼之間有一對前額鱗片，這是綠蠵龜獨有的特徵喔。",
-    image: "img/前額.png",
-    alt: "一對前額鱗",
-    text: `<p>綠蠵龜兩眼間的前額鱗片大多為一對兩片</p>`,
-    hasDetail: true
-  },
-  {
-    bubble: "我的背甲的甲片分成兩個部分，中間垂直的5片稱為中央盾，兩側是4對側盾。",
-    image: "img/中央盾.png",
-    alt: "五片中央盾與四對側盾",
-    text: `<p>有四對側盾</p><p>五片中央盾</p>`,
-    hasDetail: true
-  }
+    { title: "花紋特徵", bubble: "我的背甲花紋像煙火一樣繽紛燦爛！", image: "img/花紋.png", text: "<p>年輕海龜背甲上常見美麗的輻射狀紋路，從中央向外發散。</p><p>隨著長大會逐漸變得斑駁呈迷彩狀。</p>", hasDetail: true },
+    { title: "水滴外型", bubble: "我的背甲是水滴形狀喔。", image: "img/水滴.png", text: "<p>大多數綠蠵龜背甲呈水滴狀或橢圓狀，長度約90-130公分。</p>", hasDetail: true },
+    { title: "綠色脂肪", bubble: "我因為常吃藻類，脂肪綠綠的，所以叫綠蠵龜喔。", image: "img/葉綠素.png", text: "<p>脂肪呈現綠色是主因，這與大量取食藻類有關。漁民見到綠油油的樣子便稱之為綠龜。</p>", hasDetail: true },
+    { title: "前額鱗片", bubble: "我兩眼之間有一對鱗片，是我的專屬特徵！", image: "img/前額.png", text: "<p>綠蠵龜兩眼間的前額鱗片大多為「一對兩片」，這是區分品種的重要依據。</p>", hasDetail: true },
+    { title: "背甲構造", bubble: "我的背甲由5片中央盾與4對側盾組成。", image: "img/中央盾.png", text: "<p>包含五片中央盾與四對側盾，結構穩定且對稱。</p>", hasDetail: true }
 ];
 
-// 最終階段：兩個純訊息對話（無解說框）
 const finalMessages = [
-  {
-    bubble: "戳什麼戳!再戳三十萬!",
-    hasDetail: false
-  },
-  {
-    bubble: "人類你的手真的很賤= =",
-    hasDetail: false
-  }
+    { bubble: "戳什麼戳！再戳三十萬！", hasDetail: false },
+    { bubble: "人類你的手真的很賤= =", hasDetail: false }
 ];
 
 let availableFeatures = [...initialFeatures];
 let unlockedFinal = false;
 let currentFeature = null;
 
-function getNextFeature() {
-  if (availableFeatures.length === 0 && !unlockedFinal) {
-    availableFeatures = [...finalMessages];
-    unlockedFinal = true;
-  }
+const turtle = document.getElementById("myTurtle");
+const bubble = document.getElementById("bubble");
+const bubbleText = document.getElementById("bubbleText");
+const modal = document.getElementById("detailModal");
 
-  const randomIndex = Math.floor(Math.random() * availableFeatures.length);
-  const selected = availableFeatures[randomIndex];
+turtle.addEventListener("click", () => {
+    if (availableFeatures.length === 0 && !unlockedFinal) {
+        availableFeatures = [...finalMessages];
+        unlockedFinal = true;
+    }
+    const idx = Math.floor(Math.random() * availableFeatures.length);
+    currentFeature = availableFeatures[idx];
+    if (!unlockedFinal) availableFeatures.splice(idx, 1);
 
-  if (unlockedFinal) {
-    return selected;
-  } else {
-    availableFeatures.splice(randomIndex, 1);
-    return selected;
-  }
+    bubbleText.textContent = currentFeature.bubble;
+    bubble.classList.add("show");
+});
+
+bubble.addEventListener("click", (e) => {
+    e.stopPropagation();
+    bubble.classList.remove("show");
+    if (currentFeature.hasDetail) {
+        document.getElementById("modalTitle").textContent = currentFeature.title;
+        document.getElementById("modalImage").src = currentFeature.image;
+        document.getElementById("modalText").innerHTML = currentFeature.text;
+        modal.classList.add("show");
+    }
+});
+
+document.getElementById("closeCard").addEventListener("click", () => modal.classList.remove("show"));
+modal.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("show"); });
+
+// 確保背景影片循環的 JS 保險機制
+const bgVideo = document.getElementById('video');
+bgVideo.addEventListener('ended', () => { bgVideo.play(); });
+
+// 箭頭方向與翻轉修正
+setInterval(() => {
+    const matrix = window.getComputedStyle(turtle).transform;
+    let scaleX = 1;
+    if (matrix !== "none") {
+        const values = matrix.split('(')[1].split(')')[0].split(',');
+        scaleX = parseFloat(values[0]);
+    }
+    const correction = scaleX < 0 ? -1 : 1;
+    bubble.style.setProperty('--flip-correction', correction);
+    bubble.style.setProperty('--arrow-right', correction === -1 ? 'auto' : '30px');
+    bubble.style.setProperty('--arrow-left', correction === -1 ? '30px' : 'auto');
+}, 100);
+
+// 音樂控制
+const bgm = document.getElementById('bgm');
+let isPlaying = false;
+function toggleSound() {
+    if (isPlaying) {
+        bgm.pause();
+        document.getElementById('sound-icon').src = 'img/靜音.png';
+        document.getElementById('volumeSliderContainer').classList.remove('visible');
+    } else {
+        bgm.play().catch(e => console.log("需使用者互動才能播放音訊"));
+        document.getElementById('sound-icon').src = 'img/聲音.png';
+        document.getElementById('volumeSliderContainer').classList.add('visible');
+    }
+    isPlaying = !isPlaying;
 }
-
-function updateBubbleDirection() {
-  const turtle = document.getElementById("myTurtle");
-  const matrix = window.getComputedStyle(turtle).transform;
-
-  let scaleX = 1;
-  if (matrix && matrix !== "none") {
-    const values = matrix.split('(')[1].split(')')[0].split(',');
-    scaleX = parseFloat(values[0]);
-  }
-
-  const correction = scaleX < 0 ? -1 : 1;
-  const bubble = document.getElementById("bubble");
-
-  bubble.style.setProperty('--flip-correction', correction);
-
-  if (correction === -1) {
-    bubble.style.setProperty('--arrow-right', 'auto');
-    bubble.style.setProperty('--arrow-left', '40px');
-  } else {
-    bubble.style.setProperty('--arrow-right', '40px');
-    bubble.style.setProperty('--arrow-left', 'auto');
-  }
-}
-
-setInterval(updateBubbleDirection, 100);
-updateBubbleDirection();
-
-document.getElementById("myTurtle").addEventListener("click", function() {
-  currentFeature = getNextFeature();
-  document.getElementById("bubbleText").textContent = currentFeature.bubble;
-
-  const bubble = document.getElementById("bubble");
-  bubble.classList.remove("no-zoom");
-
-  if (!currentFeature.hasDetail) {
-    bubble.classList.add("no-zoom");
-  }
-
-  bubble.classList.add("show");
-});
-
-document.getElementById("bubble").addEventListener("click", function(e) {
-  e.stopPropagation();
-
-  if (currentFeature && currentFeature.hasDetail) {
-    document.getElementById("modalTitle").textContent = "";
-    document.getElementById("modalImage").src = currentFeature.image;
-    document.getElementById("modalImage").alt = currentFeature.alt;
-    document.getElementById("modalText").innerHTML = currentFeature.text;
-
-    this.classList.remove("show");
-    document.getElementById("detailModal").style.display = "flex";
-  } else {
-    this.classList.remove("show");
-  }
-});
-
-document.getElementById("backButton").addEventListener("click", function() {
-  document.getElementById("detailModal").style.display = "none";
-});
+document.getElementById('volumeControl').addEventListener('input', (e) => { bgm.volume = e.target.value / 100; });
 </script>
-
 </body>
 </html>
