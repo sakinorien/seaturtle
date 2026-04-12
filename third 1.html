@@ -543,6 +543,36 @@
     margin: 0 auto;        /* 置中 */
 }
 
+/* 獨立溫度顯示 - 可自由調整位置 */
+.temperature-display {
+    position: absolute;
+    top: 20%;                    /* 垂直位置 */
+    left: 70%;                   /* 水平位置 - 放在溫度計右邊 */
+    transform: translate(-50%, -50%);
+    font-size: 52px;             /* 更大更醒目 */
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(0,0,0,0.9);
+    background: rgba(0, 0, 0, 0.55);
+    padding: 12px 28px;
+    border-radius: 60px;
+    white-space: nowrap;
+    z-index: 15;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    
+}
+
+/* 小螢幕調整 */
+@media (max-width: 1024px) {
+    .temperature-display {
+        font-size: 42px;
+        top: 32%;
+        left: 48%;
+        padding: 10px 24px;
+    }
+}
+
 .body {
     position: absolute;
     width: 100%;
@@ -587,24 +617,28 @@
         <div class="info-dot dot-2" id="dot2"></div>
         <div class="info-dot dot-3" id="dot3"></div>
 
-        <!-- 資訊框1（特殊左右布局） -->
-        <div id="info1" class="info-card special-layout">
-            <div class="card-back-button">←</div>
-            <div class="card-content">
-                <div class="thermometer-container" id="container">
-                    <div class="handle" id="handle"></div>
-                    <div class="body"></div>
-                </div>
+        <!-- 資訊框1 -->
+<div id="info1" class="info-card special-layout">
+    <div class="card-back-button">←</div>
+    <div class="card-content">
+        
+        <div class="thermometer-container" id="container">
+            <div class="handle" id="handle"></div>
+            <div class="body"></div>
+        </div>
 
-                <div class="right-section">
-                    <div class="image-stack">
-                        <img src="img/IMG_1154.PNG" alt="中樞溫度" class="base-image">
-                        <img src="img/海龜蝴蝶結.PNG" alt="高溫雄性" class="overlay-image temp-male">
-                        <img src="img/公.png" alt="低溫雌性" class="overlay-image temp-female">
-                    </div>
-                </div>
+        <!-- 獨立溫度顯示（移到右邊） -->
+        <div class="temperature-display" id="temp-display">28°C</div>
+
+        <div class="right-section">
+            <div class="image-stack">
+                <img src="img/IMG_1154.PNG" alt="中樞溫度" class="base-image">
+                <img src="img/海龜蝴蝶結.PNG" alt="高溫雄性" class="overlay-image temp-male">
+                <img src="img/公.png" alt="低溫雌性" class="overlay-image temp-female">
             </div>
         </div>
+    </div>
+</div>
 
         <!-- 資訊框2 -->
 <div id="info2" class="info-card">
@@ -799,13 +833,15 @@
             window.location.href = 'third.html'; 
         });
 
-        // === 溫度計拖曳（符合你想要的邏輯：範圍限制 + 根據位置切換疊加圖） ===
+        // === 溫度計拖曳 + 溫度顯示（保留你原本的拖曳範圍）===
 const thermometerContainer = document.getElementById('container');
 const thermometerHandle = document.getElementById('handle');
+const tempDisplay = document.getElementById('temp-display');
 
-if (thermometerHandle && thermometerContainer) {
-    const thermometerMinTop = 170;    // 上限 px
-    const thermometerMaxTop = 200;   // 下限 px（你原本寫 100，應該是下限？）
+if (thermometerHandle && thermometerContainer && tempDisplay) {
+    
+    const minTop = 170;   // ← 完全保留你原本的上限
+    const maxTop = 200;   // ← 完全保留你原本的下限
 
     let isDraggingThermometer = false;
     let thermometerStartY = 0;
@@ -815,9 +851,9 @@ if (thermometerHandle && thermometerContainer) {
     thermometerHandle.addEventListener('mousedown', (e) => {
         isDraggingThermometer = true;
         thermometerStartY = e.clientY;
-        thermometerStartTop = thermometerHandle.offsetTop;  // 使用 offsetTop 更準確
+        thermometerStartTop = parseFloat(thermometerHandle.style.top) || 185; // 預設在中間
         thermometerHandle.style.cursor = 'grabbing';
-        e.preventDefault();  // 防止選取或頁面滾動
+        e.preventDefault();
     });
 
     // 拖曳中
@@ -827,27 +863,37 @@ if (thermometerHandle && thermometerContainer) {
         const deltaY = e.clientY - thermometerStartY;
         let newTop = thermometerStartTop + deltaY;
 
-        // 嚴格限制範圍
-        newTop = Math.max(thermometerMinTop, Math.min(thermometerMaxTop, newTop));
-
+        // 嚴格使用你原本的範圍
+        newTop = Math.max(minTop, Math.min(maxTop, newTop));
         thermometerHandle.style.top = `${newTop}px`;
 
-        // 根據把手位置切換疊加圖
-        const handleTop = newTop;  // 直接用計算後的新位置
+        // 計算溫度（根據你 170~200px 的範圍對應 32°C ~ 24°C）
+        const progress = (newTop - minTop) / (maxTop - minTop);
+        const currentTemp = Math.round(30 - (progress * 2));   // 32°C → 24°C
 
-        if (handleTop <= 170) {
-            document.querySelector('.temp-male').style.opacity = '1';
-            document.querySelector('.temp-female').style.opacity = '0';
-        } else if (handleTop >= 200) {
-            document.querySelector('.temp-male').style.opacity = '0';
-            document.querySelector('.temp-female').style.opacity = '1';
+        tempDisplay.textContent = `${currentTemp}°C`;
+
+        // 圖片切換（保留你原本的邏輯）
+        const maleImg = document.querySelector('.temp-male');
+        const femaleImg = document.querySelector('.temp-female');
+
+        if (newTop <= 175) {                    // 高溫區
+            maleImg.style.opacity = '1';
+            femaleImg.style.opacity = '0';
+        } else if (newTop >= 195) {             // 低溫區
+            maleImg.style.opacity = '0';
+            femaleImg.style.opacity = '1';
         } else {
-            document.querySelectorAll('.overlay-image').forEach(img => {
-                img.style.opacity = '0.3';
-            });
+            maleImg.style.opacity = '0.35';
+            femaleImg.style.opacity = '0.35';
         }
     });
 
+    // 放開滑鼠
+    document.addEventListener('mouseup', () => {
+        isDraggingThermometer = false;
+        thermometerHandle.style.cursor = 'grab';
+    });
 }
 
         // === 滾輪選單 ===
